@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>College Tracking System</title>
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    overflow: hidden;
+}
+
+
+/* ================= HEADER ================= */
+
+.header {
+
+    height: 60px;
+
+    background: #1e293b;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 20px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    position: relative;
+
+    z-index: 1000;
+}
+
+
+/* ================= MAP ================= */
+
+#map {
+
+    width: 100%;
+
+    height: calc(100vh - 60px);
+
+    background: #d1d5db;
+}
+
+
+/* ================= CONTROL PANEL ================= */
+
+.control-panel {
+
+    position: absolute;
+
+    top: 75px;
+
+    left: 15px;
+
+    z-index: 1000;
+
+    background: rgba(15,23,42,0.95);
+
+    color: white;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    width: 220px;
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,0.4);
+}
+
+
+.status-row {
+
+    font-size: 13px;
+
+    margin-bottom: 6px;
+}
+
+
+.status-dot {
+
+    display: inline-block;
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #ffaa00;
+
+    margin-right: 5px;
+}
+
+
+/* ================= BUTTONS ================= */
+
+.control-button {
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    padding: 9px 10px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.gps-button {
+    background: #009fe3;
+}
+
+
+.reset-button {
+    background: #dc2626;
+}
+
+
+.gps-button:hover {
+    background: #0085bd;
+}
+
+
+.reset-button:hover {
+    background: #b91c1c;
+}
+
+
+.gps-info {
+
+    margin-top: 8px;
+
+    font-size: 11px;
+
+    color: #cbd5e1;
+
+    line-height: 1.5;
+}
+
+
+/* ================= GPS MARKER ================= */
+
+.gps-marker {
+
+    width: 20px;
+
+    height: 20px;
+
+    background: #00aaff;
+
+    border: 3px solid white;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 8px #00aaff,
+        0 0 18px #00aaff,
+        0 0 30px rgba(0,170,255,0.6);
+}
+
+
+/* ================= POPUP ================= */
+
+.object-popup {
+
+    text-align: center;
+
+    min-width: 190px;
+}
+
+
+.object-popup h3 {
+
+    margin: 5px 0 8px;
+
+    font-size: 16px;
+}
+
+
+.object-popup img {
+
+    width: 170px;
+
+    max-height: 130px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    margin-top: 5px;
+}
+
+
+.object-popup p {
+
+    margin: 7px 0;
+
+    font-size: 13px;
+}
+
+
+/* ================= BUILDING CLICK ZONE ================= */
+
+/*
+   These zones are invisible.
+   User clicks directly on the building area.
+*/
+
+.building-zone {
+
+    fill: transparent;
+
+    fill-opacity: 0;
+
+    stroke: transparent;
+
+    stroke-opacity: 0;
+
+    cursor: pointer;
+}
+
+
+/* ================= LEGEND ================= */
+
+.legend {
+
+    position: absolute;
+
+    bottom: 20px;
+
+    right: 20px;
+
+    z-index: 1000;
+
+    background: rgba(15,23,42,0.92);
+
+    color: white;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.3);
+}
+
+
+.legend-item {
+    margin: 5px 0;
+}
+
+
+.legend-dot {
+
+    display: inline-block;
+
+    width: 10px;
+
+    height: 10px;
+
+    border-radius: 50%;
+
+    margin-right: 6px;
+}
+
+
+.live-dot {
+    background: #00aaff;
+}
+
+
+.campus-dot {
+    background: #ff8800;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px) {
+
+    .header {
+
+        height: 52px;
+
+        font-size: 17px;
+
+        padding: 0 12px;
+    }
+
+
+    #map {
+
+        height: calc(100vh - 52px);
+    }
+
+
+    .control-panel {
+
+        top: 62px;
+
+        left: 8px;
+
+        width: 190px;
+
+        padding: 10px;
+    }
+
+
+    .legend {
+
+        bottom: 10px;
+
+        right: 10px;
+
+        font-size: 11px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<div class="header">
+
+    🗺️ College Tracking System
+
+</div>
+
+
+<!-- ================= MAP ================= -->
+
+<div id="map"></div>
+
+
+<!-- ================= CONTROL PANEL ================= -->
+
+<div class="control-panel">
+
+
+    <div class="status-row">
+
+        <span
+            class="status-dot"
+            id="statusDot">
+        </span>
+
+        <span id="trackingStatus">
+            Waiting for GPS
+        </span>
+
+    </div>
+
+
+    <div style="margin-bottom:6px;">
+
+        👤 Object #A17
+
+    </div>
+
+
+    <button
+        class="control-button gps-button"
+        onclick="startGPS()">
+
+        📍 Start GPS Tracking
+
+    </button>
+
+
+    <button
+        class="control-button reset-button"
+        onclick="resetBuildingLocations()">
+
+        🔄 Reset Building Locations
+
+    </button>
+
+
+    <div
+        class="gps-info"
+        id="gpsInfo">
+
+        GPS not started
+
+    </div>
+
+</div>
+
+
+<!-- ================= LEGEND ================= -->
+
+<div class="legend">
+
+    <div class="legend-item">
+
+        <span class="legend-dot live-dot"></span>
+
+        Live Object
+
+    </div>
+
+
+    <div class="legend-item">
+
+        <span class="legend-dot campus-dot"></span>
+
+        Campus Object
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* ================================================= */
+/* MAP */
+/* ================================================= */
+
+
+const campusCenter = [
+
+    13.12610,
+
+    77.80950
+
+];
+
+
+const map = L.map(
+
+    "map",
+
+    {
+
+        zoomControl: true,
+
+        attributionControl: true
+
+    }
+
+).setView(
+
+    campusCenter,
+
+    18
+
+);
+
+
+/* ================================================= */
+/* SATELLITE */
+/* ================================================= */
+
+
+const satelliteLayer = L.tileLayer(
+
+    "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+    "World_Imagery/MapServer/tile/{z}/{y}/{x}",
+
+    {
+
+        maxZoom: 20,
+
+        attribution: "Tiles © Esri"
+
+    }
+
+);
+
+
+satelliteLayer.addTo(map);
+
+
+/* ================================================= */
+/* GPS ICON */
+/* ================================================= */
+
+
+const gpsIcon = L.divIcon({
+
+    className: "",
+
+    html:
+        '<div class="gps-marker"></div>',
+
+    iconSize: [20,20],
+
+    iconAnchor: [10,10]
+
+});
+
+
+/* ================================================= */
+/* GPS VARIABLES */
+/* ================================================= */
+
+
+let movingMarker = null;
+
+let trailCoordinates = [];
+
+
+/* ================================================= */
+/* GPS TRAIL */
+/* ================================================= */
+
+
+const trailLine = L.polyline(
+
+    [],
+
+    {
+
+        color: "#00ff88",
+
+        weight: 5,
+
+        opacity: 0.85,
+
+        lineCap: "round",
+
+        lineJoin: "round"
+
+    }
+
+).addTo(map);
+
+
+/* ================================================= */
+/* BUILDING DATA */
+/* ================================================= */
+
+
+/*
+   Coordinates were saved during
+   your calibration process.
+*/
+
+
+const buildingData = [
+
+    {
+        id: "academic",
+
+        name: "Main Academic Building",
+
+        photo: "photos/academic.jpeg",
+
+        radius: 38
+    },
+
+
+    {
+        id: "cafeteria",
+
+        name: "Cafeteria",
+
+        photo: "",
+
+        radius: 25
+    },
+
+
+    {
+        id: "dining",
+
+        name: "Dining Hall",
+
+        photo: "",
+
+        radius: 22
+    },
+
+
+    {
+        id: "girls",
+
+        name: "Girls Hostel",
+
+        photo: "",
+
+        radius: 25
+    },
+
+
+    {
+        id: "boysB",
+
+        name: "Boys Hostel – Block B",
+
+        photo: "",
+
+        radius: 28
+    },
+
+
+    {
+        id: "boysA",
+
+        name: "Boys Hostel – Block A",
+
+        photo: "",
+
+        radius: 25
+    }
+
+];
+
+
+/* ================================================= */
+/* LOAD SAVED POSITIONS */
+/* ================================================= */
+
+
+function getSavedPositions() {
+
+
+    const saved =
+
+        localStorage.getItem(
+
+            "campusBuildingPositions"
+
+        );
+
+
+    if (!saved) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        return JSON.parse(saved);
+
+    }
+
+    catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+/* ================================================= */
+/* FALLBACK POSITIONS */
+/* ================================================= */
+
+
+const fallbackPositions = {
+
+    academic: [
+        13.127035,
+        77.810627
+    ],
+
+    cafeteria: [
+        13.125729,
+        77.809597
+    ],
+
+    dining: [
+        13.125703,
+        77.809243
+    ],
+
+    girls: [
+        13.126278,
+        77.809071
+    ],
+
+    boysB: [
+        13.125337,
+        77.808953
+    ],
+
+    boysA: [
+        13.126016,
+        77.808266
+    ]
+
+};
+
+
+/* ================================================= */
+/* GET POSITION */
+/* ================================================= */
+
+
+function getPosition(building) {
+
+
+    const saved =
+
+        getSavedPositions();
+
+
+    if (
+
+        saved &&
+
+        saved[building.id]
+
+    ) {
+
+        return saved[building.id];
+
+    }
+
+
+    return fallbackPositions[
+
+        building.id
+
+    ];
+
+}
+
+
+/* ================================================= */
+/* POPUP CONTENT */
+/* ================================================= */
+
+
+function createPopup(building) {
+
+
+    let content = `
+
+        <div class="object-popup">
+
+            <h3>
+                ${building.name}
+            </h3>
+
+    `;
+
+
+    if (building.photo) {
+
+
+        content += `
+
+            <img
+                src="${building.photo}"
+                alt="${building.name}"
+            >
+
+        `;
+
+    }
+
+    else {
+
+
+        content += `
+
+            <p>
+                📷 Photo will be added
+            </p>
+
+        `;
+
+    }
+
+
+    content += `
+
+            <p>
+                Campus Object
+            </p>
+
+        </div>
+
+    `;
+
+
+    return content;
+
+}
+
+
+/* ================================================= */
+/* CREATE INVISIBLE BUILDING ZONES */
+/* ================================================= */
+
+
+function createBuildingZones() {
+
+
+    buildingData.forEach(
+
+        building => {
+
+
+            const position =
+
+                getPosition(building);
+
+
+            /*
+               Invisible circle.
+               The user clicks the building
+               area instead of an orange marker.
+            */
+
+
+            const zone = L.circle(
+
+                position,
+
+                {
+
+                    radius:
+                        building.radius,
+
+                    className:
+                        "building-zone",
+
+                    fillColor:
+                        "transparent",
+
+                    fillOpacity:
+                        0,
+
+                    color:
+                        "transparent",
+
+                    opacity:
+                        0,
+
+                    interactive:
+                        true
+
+                }
+
+            ).addTo(map);
+
+
+            zone.bindPopup(
+
+                createPopup(building)
+
+            );
+
+
+            /*
+               Store zone for future use.
+            */
+
+
+            building.zone = zone;
+
+        }
+
+    );
+
+}
+
+
+createBuildingZones();
+
+
+/* ================================================= */
+/* RESET BUILDING LOCATIONS */
+/* ================================================= */
+
+
+function resetBuildingLocations() {
+
+
+    const confirmed = confirm(
+
+        "Reset calibrated building locations?"
+
+    );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+
+        "campusBuildingPositions"
+
+    );
+
+
+    location.reload();
+
+}
+
+
+/* ================================================= */
+/* GPS POSITION */
+/* ================================================= */
+
+
+function showGPSPosition(
+
+    latitude,
+
+    longitude,
+
+    accuracy
+
+) {
+
+
+    const gpsPosition = [
+
+        latitude,
+
+        longitude
+
+    ];
+
+
+    /* ============================================= */
+    /* GPS MARKER */
+    /* ============================================= */
+
+
+    if (!movingMarker) {
+
+
+        movingMarker =
+
+            L.marker(
+
+                gpsPosition,
+
+                {
+
+                    icon: gpsIcon,
+
+                    zIndexOffset: 1000
+
+                }
+
+            ).addTo(map);
+
+
+        movingMarker.bindTooltip(
+
+            "Object #A17",
+
+            {
+
+                permanent: true,
+
+                direction: "right",
+
+                offset: [12,0]
+
+            }
+
+        );
+
+    }
+
+    else {
+
+
+        movingMarker.setLatLng(
+
+            gpsPosition
+
+        );
+
+    }
+
+
+    /* ============================================= */
+    /* TRAIL */
+    /* ============================================= */
+
+
+    trailCoordinates.push(
+
+        gpsPosition
+
+    );
+
+
+    if (
+
+        trailCoordinates.length > 100
+
+    ) {
+
+        trailCoordinates.shift();
+
+    }
+
+
+    trailLine.setLatLngs(
+
+        trailCoordinates
+
+    );
+
+
+    /* ============================================= */
+    /* GPS INFO */
+    /* ============================================= */
+
+
+    document.getElementById(
+
+        "gpsInfo"
+
+    ).innerHTML =
+
+        "Accuracy: " +
+
+        Math.round(accuracy) +
+
+        " m<br>" +
+
+        "Lat: " +
+
+        latitude.toFixed(6) +
+
+        "<br>" +
+
+        "Lon: " +
+
+        longitude.toFixed(6);
+
+
+    document.getElementById(
+
+        "trackingStatus"
+
+    ).innerText =
+
+        "GPS Tracking Active";
+
+
+    document.getElementById(
+
+        "statusDot"
+
+    ).style.background =
+
+        "#00ff88";
+
+}
+
+
+/* ================================================= */
+/* SEND GPS TO SERVER */
+/* ================================================= */
+
+
+function sendLocationToServer(
+
+    latitude,
+
+    longitude,
+
+    accuracy
+
+) {
+
+
+    fetch(
+
+        "/update-location",
+
+        {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type":
+                    "application/json"
+
+            },
+
+            body: JSON.stringify({
+
+                latitude:
+                    latitude,
+
+                longitude:
+                    longitude,
+
+                accuracy:
+                    accuracy
+
+            })
+
+        }
+
+    )
+
+    .catch(
+
+        error => {
+
+            console.log(
+
+                "GPS send error:",
+
+                error
+
+            );
+
+        }
+
+    );
+
+}
+
+
+/* ================================================= */
+/* START GPS */
+/* ================================================= */
+
+
+function startGPS() {
+
+
+    if (
+
+        !navigator.geolocation
+
+    ) {
+
+
+        alert(
+
+            "GPS is not supported by this browser."
+
+        );
+
+
+        return;
+
+    }
+
+
+    document.getElementById(
+
+        "trackingStatus"
+
+    ).innerText =
+
+        "Requesting GPS permission...";
+
+
+    navigator.geolocation.watchPosition(
+
+
+        function(position) {
+
+
+            const latitude =
+
+                position.coords.latitude;
+
+
+            const longitude =
+
+                position.coords.longitude;
+
+
+            const accuracy =
+
+                position.coords.accuracy;
+
+
+            showGPSPosition(
+
+                latitude,
+
+                longitude,
+
+                accuracy
+
+            );
+
+
+            sendLocationToServer(
+
+                latitude,
+
+                longitude,
+
+                accuracy
+
+            );
+
+        },
+
+
+        function(error) {
+
+
+            console.log(
+
+                "GPS error:",
+
+                error
+
+            );
+
+
+            document.getElementById(
+
+                "trackingStatus"
+
+            ).innerText =
+
+                "GPS Error";
+
+
+            document.getElementById(
+
+                "gpsInfo"
+
+            ).innerText =
+
+                "Unable to get GPS location.";
+
+        },
+
+
+        {
+
+            enableHighAccuracy:
+                true,
+
+            maximumAge:
+                2000,
+
+            timeout:
+                10000
+
+        }
+
+    );
+
+}
+
+
+/* ================================================= */
+/* RECEIVE PHONE GPS */
+/* ================================================= */
+
+
+function receiveGPSFromPhone() {
+
+
+    fetch(
+
+        "/location?time=" +
+
+        Date.now()
+
+    )
+
+
+    .then(
+
+        response =>
+
+            response.json()
+
+    )
+
+
+    .then(
+
+        data => {
+
+
+            if (
+
+                data.latitude !== null &&
+
+                data.longitude !== null
+
+            ) {
+
+
+                showGPSPosition(
+
+                    data.latitude,
+
+                    data.longitude,
+
+                    data.accuracy || 0
+
+                );
+
+            }
+
+        }
+
+    )
+
+    .catch(
+
+        error => {
+
+            console.log(
+
+                "Location receive error:",
+
+                error
+
+            );
+
+        }
+
+    );
+
+}
+
+
+/* ================================================= */
+/* SERVER POLLING */
+/* ================================================= */
+
+
+setInterval(
+
+    receiveGPSFromPhone,
+
+    1000
+
+);
+
+
+/* ================================================= */
+/* READY */
+/* ================================================= */
+
+
+console.log(
+
+    "College Tracking System Ready"
+
+);
+
+console.log(
+
+    "Building click zones active"
+
+);
+
+</script>
+
+</body>
+
+</html>
