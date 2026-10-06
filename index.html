@@ -18,7 +18,6 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
 
-
 <style>
 
 * {
@@ -32,326 +31,228 @@ body {
     overflow: hidden;
 }
 
-
 /* ================= HEADER ================= */
 
 .header {
-
     height: 60px;
-
     background: #1e293b;
-
     color: white;
-
     display: flex;
-
     align-items: center;
-
     padding: 0 20px;
-
     font-size: 22px;
-
     font-weight: bold;
-
     position: relative;
-
     z-index: 1000;
 }
-
 
 /* ================= MAP ================= */
 
 #map {
-
     width: 100%;
-
     height: calc(100vh - 60px);
-
     background: #d1d5db;
 }
-
 
 /* ================= CONTROL PANEL ================= */
 
 .control-panel {
-
     position: absolute;
-
     top: 75px;
-
     left: 15px;
-
     z-index: 1000;
-
     background: rgba(15,23,42,0.95);
-
     color: white;
-
     padding: 14px;
-
     border-radius: 10px;
-
-    width: 220px;
-
-    box-shadow:
-        0 5px 18px rgba(0,0,0,0.4);
+    width: 230px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.4);
 }
-
 
 .status-row {
-
     font-size: 13px;
-
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
-
 .status-dot {
-
     display: inline-block;
-
     width: 9px;
-
     height: 9px;
-
     border-radius: 50%;
-
     background: #ffaa00;
-
     margin-right: 5px;
 }
 
+.object-id {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #93c5fd;
+    font-weight: bold;
+}
 
 /* ================= BUTTONS ================= */
 
 .control-button {
-
     width: 100%;
-
     margin-top: 8px;
-
     padding: 9px 10px;
-
     border: none;
-
     border-radius: 6px;
-
     color: white;
-
     font-weight: bold;
-
     cursor: pointer;
 }
-
 
 .gps-button {
     background: #009fe3;
 }
 
-
 .reset-button {
     background: #dc2626;
 }
-
 
 .gps-button:hover {
     background: #0085bd;
 }
 
-
 .reset-button:hover {
     background: #b91c1c;
 }
 
+/* ================= GPS INFO ================= */
 
 .gps-info {
-
     margin-top: 8px;
-
     font-size: 11px;
-
     color: #cbd5e1;
-
     line-height: 1.5;
 }
-
 
 /* ================= GPS MARKER ================= */
 
 .gps-marker {
-
     width: 20px;
-
     height: 20px;
-
     background: #00aaff;
-
     border: 3px solid white;
-
     border-radius: 50%;
-
     box-shadow:
         0 0 8px #00aaff,
         0 0 18px #00aaff,
         0 0 30px rgba(0,170,255,0.6);
 }
 
+/* ================= OTHER OBJECT MARKER ================= */
+
+.object-marker {
+    width: 18px;
+    height: 18px;
+    background: #ff7a00;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow:
+        0 0 8px #ff7a00,
+        0 0 15px rgba(255,122,0,0.6);
+}
 
 /* ================= POPUP ================= */
 
 .object-popup {
-
     text-align: center;
-
     min-width: 190px;
 }
 
-
 .object-popup h3 {
-
     margin: 5px 0 8px;
-
     font-size: 16px;
 }
 
-
 .object-popup img {
-
     width: 170px;
-
     max-height: 130px;
-
     object-fit: cover;
-
     border-radius: 8px;
-
     margin-top: 5px;
 }
 
-
 .object-popup p {
-
     margin: 7px 0;
-
     font-size: 13px;
 }
 
-
 /* ================= BUILDING CLICK ZONE ================= */
 
-/*
-   These zones are invisible.
-   User clicks directly on the building area.
-*/
-
 .building-zone {
-
     fill: transparent;
-
     fill-opacity: 0;
-
     stroke: transparent;
-
     stroke-opacity: 0;
-
     cursor: pointer;
 }
-
 
 /* ================= LEGEND ================= */
 
 .legend {
-
     position: absolute;
-
     bottom: 20px;
-
     right: 20px;
-
     z-index: 1000;
-
     background: rgba(15,23,42,0.92);
-
     color: white;
-
     padding: 10px 14px;
-
     border-radius: 8px;
-
     font-size: 12px;
-
-    box-shadow:
-        0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
-
 
 .legend-item {
     margin: 5px 0;
 }
 
-
 .legend-dot {
-
     display: inline-block;
-
     width: 10px;
-
     height: 10px;
-
     border-radius: 50%;
-
     margin-right: 6px;
 }
-
 
 .live-dot {
     background: #00aaff;
 }
 
+.other-dot {
+    background: #ff7a00;
+}
 
 .campus-dot {
     background: #ff8800;
 }
-
 
 /* ================= MOBILE ================= */
 
 @media (max-width: 600px) {
 
     .header {
-
         height: 52px;
-
         font-size: 17px;
-
         padding: 0 12px;
     }
 
-
     #map {
-
         height: calc(100vh - 52px);
     }
 
-
     .control-panel {
-
         top: 62px;
-
         left: 8px;
-
-        width: 190px;
-
+        width: 195px;
         padding: 10px;
     }
 
-
     .legend {
-
         bottom: 10px;
-
         right: 10px;
-
         font-size: 11px;
     }
 
@@ -361,9 +262,7 @@ body {
 
 </head>
 
-
 <body>
-
 
 <!-- ================= HEADER ================= -->
 
@@ -383,7 +282,6 @@ body {
 
 <div class="control-panel">
 
-
     <div class="status-row">
 
         <span
@@ -398,9 +296,9 @@ body {
     </div>
 
 
-    <div style="margin-bottom:6px;">
+    <div class="object-id">
 
-        👤 Object #A17
+        👤 Object #<span id="objectIdDisplay">---</span>
 
     </div>
 
@@ -442,10 +340,17 @@ body {
 
         <span class="legend-dot live-dot"></span>
 
-        Live Object
+        My Object
 
     </div>
 
+    <div class="legend-item">
+
+        <span class="legend-dot other-dot"></span>
+
+        Other Objects
+
+    </div>
 
     <div class="legend-item">
 
@@ -462,9 +367,48 @@ body {
 
 
 /* ================================================= */
-/* MAP */
+/* AUTOMATIC ANONYMOUS OBJECT ID */
 /* ================================================= */
 
+function generateObjectId() {
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    const letter =
+        letters[Math.floor(Math.random() * letters.length)];
+
+    const number =
+        Math.floor(10 + Math.random() * 90);
+
+    return letter + number;
+
+}
+
+
+let objectId =
+    localStorage.getItem("anonymousObjectId");
+
+
+if (!objectId) {
+
+    objectId = generateObjectId();
+
+    localStorage.setItem(
+        "anonymousObjectId",
+        objectId
+    );
+
+}
+
+
+document.getElementById(
+    "objectIdDisplay"
+).innerText = objectId;
+
+
+/* ================================================= */
+/* MAP */
+/* ================================================= */
 
 const campusCenter = [
 
@@ -500,7 +444,6 @@ const map = L.map(
 /* SATELLITE */
 /* ================================================= */
 
-
 const satelliteLayer = L.tileLayer(
 
     "https://server.arcgisonline.com/ArcGIS/rest/services/" +
@@ -524,7 +467,6 @@ satelliteLayer.addTo(map);
 /* GPS ICON */
 /* ================================================= */
 
-
 const gpsIcon = L.divIcon({
 
     className: "",
@@ -540,19 +482,62 @@ const gpsIcon = L.divIcon({
 
 
 /* ================================================= */
-/* GPS VARIABLES */
+/* OTHER OBJECT ICON */
 /* ================================================= */
 
+const otherObjectIcon = L.divIcon({
+
+    className: "",
+
+    html:
+        '<div class="object-marker"></div>',
+
+    iconSize: [18,18],
+
+    iconAnchor: [9,9]
+
+});
+
+
+/* ================================================= */
+/* GPS VARIABLES */
+/* ================================================= */
 
 let movingMarker = null;
 
 let trailCoordinates = [];
 
+let gpsWatchId = null;
+
 
 /* ================================================= */
-/* GPS TRAIL */
+/* MULTI OBJECT MARKERS */
 /* ================================================= */
 
+const objectMarkers = {};
+
+const objectTrails = {};
+
+
+/* ================================================= */
+/* GPS ACCURACY FILTER */
+/* ================================================= */
+
+const MAX_GPS_ACCURACY = 20;
+
+
+/* ================================================= */
+/* SMOOTHING */
+/* ================================================= */
+
+let smoothingBuffer = [];
+
+const SMOOTHING_POINTS = 5;
+
+
+/* ================================================= */
+/* GPS TRAIL - MY OBJECT */
+/* ================================================= */
 
 const trailLine = L.polyline(
 
@@ -579,13 +564,6 @@ const trailLine = L.polyline(
 /* BUILDING DATA */
 /* ================================================= */
 
-
-/*
-   Coordinates were saved during
-   your calibration process.
-*/
-
-
 const buildingData = [
 
     {
@@ -598,7 +576,6 @@ const buildingData = [
         radius: 38
     },
 
-
     {
         id: "cafeteria",
 
@@ -608,7 +585,6 @@ const buildingData = [
 
         radius: 25
     },
-
 
     {
         id: "dining",
@@ -620,7 +596,6 @@ const buildingData = [
         radius: 22
     },
 
-
     {
         id: "girls",
 
@@ -631,7 +606,6 @@ const buildingData = [
         radius: 25
     },
 
-
     {
         id: "boysB",
 
@@ -641,7 +615,6 @@ const buildingData = [
 
         radius: 28
     },
-
 
     {
         id: "boysA",
@@ -660,25 +633,18 @@ const buildingData = [
 /* LOAD SAVED POSITIONS */
 /* ================================================= */
 
-
 function getSavedPositions() {
 
-
     const saved =
-
         localStorage.getItem(
-
             "campusBuildingPositions"
-
         );
-
 
     if (!saved) {
 
         return null;
 
     }
-
 
     try {
 
@@ -698,7 +664,6 @@ function getSavedPositions() {
 /* ================================================= */
 /* FALLBACK POSITIONS */
 /* ================================================= */
-
 
 const fallbackPositions = {
 
@@ -736,35 +701,25 @@ const fallbackPositions = {
 
 
 /* ================================================= */
-/* GET POSITION */
+/* GET BUILDING POSITION */
 /* ================================================= */
-
 
 function getPosition(building) {
 
-
     const saved =
-
         getSavedPositions();
 
-
     if (
-
         saved &&
-
         saved[building.id]
-
     ) {
 
         return saved[building.id];
 
     }
 
-
     return fallbackPositions[
-
         building.id
-
     ];
 
 }
@@ -774,9 +729,7 @@ function getPosition(building) {
 /* POPUP CONTENT */
 /* ================================================= */
 
-
 function createPopup(building) {
-
 
     let content = `
 
@@ -791,7 +744,6 @@ function createPopup(building) {
 
     if (building.photo) {
 
-
         content += `
 
             <img
@@ -804,7 +756,6 @@ function createPopup(building) {
     }
 
     else {
-
 
         content += `
 
@@ -834,28 +785,17 @@ function createPopup(building) {
 
 
 /* ================================================= */
-/* CREATE INVISIBLE BUILDING ZONES */
+/* CREATE BUILDING ZONES */
 /* ================================================= */
 
-
 function createBuildingZones() {
-
 
     buildingData.forEach(
 
         building => {
 
-
             const position =
-
                 getPosition(building);
-
-
-            /*
-               Invisible circle.
-               The user clicks the building
-               area instead of an orange marker.
-            */
 
 
             const zone = L.circle(
@@ -897,11 +837,6 @@ function createBuildingZones() {
             );
 
 
-            /*
-               Store zone for future use.
-            */
-
-
             building.zone = zone;
 
         }
@@ -918,9 +853,7 @@ createBuildingZones();
 /* RESET BUILDING LOCATIONS */
 /* ================================================= */
 
-
 function resetBuildingLocations() {
-
 
     const confirmed = confirm(
 
@@ -949,9 +882,8 @@ function resetBuildingLocations() {
 
 
 /* ================================================= */
-/* GPS POSITION */
+/* SHOW MY GPS POSITION */
 /* ================================================= */
-
 
 function showGPSPosition(
 
@@ -962,6 +894,99 @@ function showGPSPosition(
     accuracy
 
 ) {
+
+
+    /* ============================================= */
+    /* ACCURACY FILTER */
+    /* ============================================= */
+
+    if (accuracy > MAX_GPS_ACCURACY) {
+
+        document.getElementById(
+            "trackingStatus"
+        ).innerText =
+            "Low GPS Accuracy - Reading Ignored";
+
+
+        document.getElementById(
+            "gpsInfo"
+        ).innerHTML =
+
+            "Accuracy: " +
+            Math.round(accuracy) +
+            " m<br>Reading ignored";
+
+
+        document.getElementById(
+            "statusDot"
+        ).style.background = "#ffaa00";
+
+
+        return;
+
+    }
+
+
+    /* ============================================= */
+    /* SMOOTHING BUFFER */
+    /* ============================================= */
+
+    smoothingBuffer.push({
+
+        latitude:
+            latitude,
+
+        longitude:
+            longitude
+
+    });
+
+
+    if (
+        smoothingBuffer.length >
+        SMOOTHING_POINTS
+    ) {
+
+        smoothingBuffer.shift();
+
+    }
+
+
+    let totalLatitude = 0;
+
+    let totalLongitude = 0;
+
+
+    smoothingBuffer.forEach(
+
+        point => {
+
+            totalLatitude +=
+                point.latitude;
+
+            totalLongitude +=
+                point.longitude;
+
+        }
+
+    );
+
+
+    const smoothedLatitude =
+        totalLatitude /
+        smoothingBuffer.length;
+
+
+    const smoothedLongitude =
+        totalLongitude /
+        smoothingBuffer.length;
+
+
+    latitude =
+        smoothedLatitude;
+
+    longitude =
+        smoothedLongitude;
 
 
     const gpsPosition = [
@@ -977,9 +1002,7 @@ function showGPSPosition(
     /* GPS MARKER */
     /* ============================================= */
 
-
     if (!movingMarker) {
-
 
         movingMarker =
 
@@ -989,28 +1012,21 @@ function showGPSPosition(
 
                 {
 
-                    icon: gpsIcon,
+                    icon:
+                        gpsIcon,
 
-                    zIndexOffset: 1000
+                    zIndexOffset:
+                        1000
 
                 }
 
             ).addTo(map);
 
 
-        movingMarker.bindTooltip(
+        movingMarker.bindPopup(
 
-            "Object #A17",
-
-            {
-
-                permanent: true,
-
-                direction: "right",
-
-                offset: [12,0]
-
-            }
+            "Object #" +
+            objectId
 
         );
 
@@ -1018,11 +1034,8 @@ function showGPSPosition(
 
     else {
 
-
         movingMarker.setLatLng(
-
             gpsPosition
-
         );
 
     }
@@ -1032,23 +1045,11 @@ function showGPSPosition(
     /* TRAIL */
     /* ============================================= */
 
-
     trailCoordinates.push(
 
         gpsPosition
 
     );
-
-
-    if (
-
-        trailCoordinates.length > 100
-
-    ) {
-
-        trailCoordinates.shift();
-
-    }
 
 
     trailLine.setLatLngs(
@@ -1059,59 +1060,48 @@ function showGPSPosition(
 
 
     /* ============================================= */
-    /* GPS INFO */
+    /* STATUS */
     /* ============================================= */
 
-
     document.getElementById(
-
-        "gpsInfo"
-
-    ).innerHTML =
-
-        "Accuracy: " +
-
-        Math.round(accuracy) +
-
-        " m<br>" +
-
-        "Lat: " +
-
-        latitude.toFixed(6) +
-
-        "<br>" +
-
-        "Lon: " +
-
-        longitude.toFixed(6);
-
-
-    document.getElementById(
-
         "trackingStatus"
-
     ).innerText =
-
         "GPS Tracking Active";
 
 
     document.getElementById(
-
         "statusDot"
-
     ).style.background =
-
         "#00ff88";
+
+
+    document.getElementById(
+        "gpsInfo"
+    ).innerHTML =
+
+        "Object: #" +
+        objectId +
+        "<br>" +
+
+        "Accuracy: " +
+        Math.round(accuracy) +
+        " m<br>" +
+
+        "Latitude: " +
+        latitude.toFixed(6) +
+        "<br>" +
+
+        "Longitude: " +
+        longitude.toFixed(6);
 
 }
 
 
 /* ================================================= */
-/* SEND GPS TO SERVER */
+/* SEND LOCATION TO SERVER */
 /* ================================================= */
 
-
-function sendLocationToServer(
+async function sendLocationToServer(
 
     latitude,
 
@@ -1121,54 +1111,77 @@ function sendLocationToServer(
 
 ) {
 
+    try {
 
-    fetch(
+        const response =
 
-        "/update-location",
+            await fetch(
 
-        {
+                "/update-location",
 
-            method: "POST",
+                {
 
-            headers: {
+                    method: "POST",
 
-                "Content-Type":
-                    "application/json"
+                    headers: {
 
-            },
+                        "Content-Type":
+                            "application/json"
 
-            body: JSON.stringify({
+                    },
 
-                latitude:
-                    latitude,
+                    body: JSON.stringify({
 
-                longitude:
-                    longitude,
+                        object_id:
+                            objectId,
 
-                accuracy:
-                    accuracy
+                        latitude:
+                            latitude,
 
-            })
+                        longitude:
+                            longitude,
 
-        }
+                        accuracy:
+                            accuracy
 
-    )
+                    })
 
-    .catch(
-
-        error => {
-
-            console.log(
-
-                "GPS send error:",
-
-                error
+                }
 
             );
 
+
+        if (!response.ok) {
+
+            console.log(
+                "Server update failed"
+            );
+
+            return;
+
         }
 
-    );
+
+        console.log(
+
+            "GPS sent:",
+            objectId,
+            latitude,
+            longitude,
+            accuracy
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Server connection error:",
+            error
+        );
+
+    }
 
 }
 
@@ -1177,23 +1190,22 @@ function sendLocationToServer(
 /* START GPS */
 /* ================================================= */
 
-
 function startGPS() {
 
-
     if (
-
         !navigator.geolocation
-
     ) {
 
-
         alert(
-
             "GPS is not supported by this browser."
-
         );
 
+        return;
+
+    }
+
+
+    if (gpsWatchId !== null) {
 
         return;
 
@@ -1201,192 +1213,392 @@ function startGPS() {
 
 
     document.getElementById(
-
         "trackingStatus"
-
     ).innerText =
-
-        "Requesting GPS permission...";
-
-
-    navigator.geolocation.watchPosition(
+        "Starting GPS...";
 
 
-        function(position) {
+    document.getElementById(
+        "statusDot"
+    ).style.background =
+        "#ffaa00";
 
 
-            const latitude =
+    gpsWatchId =
 
-                position.coords.latitude;
+        navigator.geolocation.watchPosition(
 
+            position => {
 
-            const longitude =
-
-                position.coords.longitude;
-
-
-            const accuracy =
-
-                position.coords.accuracy;
+                const latitude =
+                    position.coords.latitude;
 
 
-            showGPSPosition(
-
-                latitude,
-
-                longitude,
-
-                accuracy
-
-            );
+                const longitude =
+                    position.coords.longitude;
 
 
-            sendLocationToServer(
-
-                latitude,
-
-                longitude,
-
-                accuracy
-
-            );
-
-        },
+                const accuracy =
+                    position.coords.accuracy;
 
 
-        function(error) {
+                console.log(
+
+                    "RAW GPS:",
+                    latitude,
+                    longitude,
+                    accuracy
+
+                );
 
 
-            console.log(
+                /* ================================= */
+                /* ACCURACY CHECK BEFORE SEND */
+                /* ================================= */
 
-                "GPS error:",
+                if (
+                    accuracy >
+                    MAX_GPS_ACCURACY
+                ) {
 
-                error
+                    showGPSPosition(
 
-            );
+                        latitude,
+                        longitude,
+                        accuracy
 
+                    );
 
-            document.getElementById(
+                    return;
 
-                "trackingStatus"
-
-            ).innerText =
-
-                "GPS Error";
-
-
-            document.getElementById(
-
-                "gpsInfo"
-
-            ).innerText =
-
-                "Unable to get GPS location.";
-
-        },
+                }
 
 
-        {
+                /* ================================= */
+                /* SHOW POSITION */
+                /* ================================= */
 
-            enableHighAccuracy:
-                true,
+                showGPSPosition(
 
-            maximumAge:
-                2000,
+                    latitude,
+                    longitude,
+                    accuracy
 
-            timeout:
-                10000
+                );
 
-        }
 
-    );
+                /* ================================= */
+                /* SEND TO CLOUD */
+                /* ================================= */
+
+                sendLocationToServer(
+
+                    latitude,
+                    longitude,
+                    accuracy
+
+                );
+
+            },
+
+
+            error => {
+
+                console.log(
+                    "GPS ERROR:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "trackingStatus"
+                ).innerText =
+                    "GPS Error";
+
+
+                document.getElementById(
+                    "statusDot"
+                ).style.background =
+                    "#ff3333";
+
+
+                document.getElementById(
+                    "gpsInfo"
+                ).innerHTML =
+
+                    "Unable to obtain GPS location.";
+
+            },
+
+
+            {
+
+                enableHighAccuracy:
+                    true,
+
+                maximumAge:
+                    2000,
+
+                timeout:
+                    10000
+
+            }
+
+        );
 
 }
 
 
 /* ================================================= */
-/* RECEIVE PHONE GPS */
+/* CREATE OTHER OBJECT MARKER */
 /* ================================================= */
 
+function updateObjectMarker(
 
-function receiveGPSFromPhone() {
+    object
 
-
-    fetch(
-
-        "/location?time=" +
-
-        Date.now()
-
-    )
+) {
 
 
-    .then(
-
-        response =>
-
-            response.json()
-
-    )
+    const id =
+        object.object_id;
 
 
-    .then(
+    if (
+        id === objectId
+    ) {
 
-        data => {
+        return;
 
-
-            if (
-
-                data.latitude !== null &&
-
-                data.longitude !== null
-
-            ) {
+    }
 
 
-                showGPSPosition(
+    if (
+        object.latitude === null ||
+        object.longitude === null
+    ) {
 
-                    data.latitude,
+        return;
 
-                    data.longitude,
+    }
 
-                    data.accuracy || 0
+
+    const position = [
+
+        object.latitude,
+
+        object.longitude
+
+    ];
+
+
+    /* ============================================= */
+    /* CREATE MARKER */
+    /* ============================================= */
+
+    if (!objectMarkers[id]) {
+
+        objectMarkers[id] =
+
+            L.marker(
+
+                position,
+
+                {
+
+                    icon:
+                        otherObjectIcon,
+
+                    zIndexOffset:
+                        900
+
+                }
+
+            ).addTo(map);
+
+
+        objectMarkers[id].bindPopup(
+
+            `
+
+            <div class="object-popup">
+
+                <h3>
+                    Anonymous Object
+                </h3>
+
+                <p>
+                    Object #${id}
+                </p>
+
+                <p>
+                    Accuracy:
+                    ${Math.round(object.accuracy || 0)} m
+                </p>
+
+            </div>
+
+            `
+
+        );
+
+
+        objectTrails[id] = [];
+
+    }
+
+    else {
+
+        objectMarkers[id].setLatLng(
+
+            position
+
+        );
+
+    }
+
+
+    /* ============================================= */
+    /* OTHER OBJECT TRAIL */
+    /* ============================================= */
+
+    objectTrails[id].push(
+
+        position
+
+    );
+
+
+    if (
+        objectTrails[id].length >
+        100
+    ) {
+
+        objectTrails[id].shift();
+
+    }
+
+
+    if (
+        !objectTrails[id + "_line"]
+    ) {
+
+        objectTrails[id + "_line"] =
+
+            L.polyline(
+
+                objectTrails[id],
+
+                {
+
+                    color:
+                        "#ff7a00",
+
+                    weight:
+                        3,
+
+                    opacity:
+                        0.65,
+
+                    lineCap:
+                        "round",
+
+                    lineJoin:
+                        "round"
+
+                }
+
+            ).addTo(map);
+
+    }
+
+    else {
+
+        objectTrails[id + "_line"].setLatLngs(
+
+            objectTrails[id]
+
+        );
+
+    }
+
+}
+
+
+/* ================================================= */
+/* RECEIVE ALL OBJECTS FROM SERVER */
+/* ================================================= */
+
+async function receiveAllObjects() {
+
+    try {
+
+        const response =
+
+            await fetch(
+
+                "/locations?time=" +
+                Date.now(),
+
+                {
+
+                    cache:
+                        "no-store"
+
+                }
+
+            );
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        Object.keys(data).forEach(
+
+            id => {
+
+                updateObjectMarker(
+
+                    data[id]
 
                 );
 
             }
 
-        }
+        );
 
-    )
 
-    .catch(
+    }
 
-        error => {
+    catch (error) {
 
-            console.log(
+        console.log(
 
-                "Location receive error:",
+            "Object update error:",
+            error
 
-                error
+        );
 
-            );
-
-        }
-
-    );
+    }
 
 }
 
 
 /* ================================================= */
-/* SERVER POLLING */
+/* POLL SERVER */
 /* ================================================= */
-
 
 setInterval(
 
-    receiveGPSFromPhone,
+    receiveAllObjects,
 
     1000
 
@@ -1394,21 +1606,11 @@ setInterval(
 
 
 /* ================================================= */
-/* READY */
+/* INITIAL OBJECT LOAD */
 /* ================================================= */
 
+receiveAllObjects();
 
-console.log(
-
-    "College Tracking System Ready"
-
-);
-
-console.log(
-
-    "Building click zones active"
-
-);
 
 </script>
 
