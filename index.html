@@ -18,6 +18,8 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
 
+
+
 <style>
 
 * {
@@ -258,6 +260,20 @@ body {
 
 }
 
+
+/* ================= PHOTO UPLOAD ================= */
+.photo-button { background: #16a34a; }
+.photo-feed-button { background: #475569; }
+#photoInput { display: none; }
+.photo-status { margin-top: 8px; font-size: 12px; line-height: 1.4; color: #d1fae5; }
+.photo-feed { display: none; position: absolute; z-index: 2000; top: 70px; right: 15px; bottom: 15px; width: min(420px, calc(100vw - 30px)); overflow-y: auto; background: #0f172a; color: white; border-radius: 10px; padding: 14px; box-shadow: 0 5px 20px #0008; }
+.photo-feed.open { display: block; }
+.photo-card { border: 1px solid #334155; border-radius: 8px; padding: 10px; margin: 10px 0; }
+.photo-card img { width: 100%; max-height: 230px; object-fit: contain; background: #020617; border-radius: 6px; }
+.photo-card p { font-size: 12px; line-height: 1.5; margin: 6px 0 0; overflow-wrap: anywhere; }
+.photo-feed-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.photo-feed-head button { padding:7px 10px; border:0; border-radius:5px; cursor:pointer; }
+
 </style>
 
 </head>
@@ -312,6 +328,11 @@ body {
     </button>
 
 
+    <button type="button" class="control-button photo-button" onclick="document.getElementById('photoInput').click()">📷 Take / Upload Photo</button>
+    <input id="photoInput" type="file" accept="image/*" capture="environment" onchange="uploadPhoto(this.files[0])">
+    <button type="button" class="control-button photo-feed-button" onclick="togglePhotoFeed()">🖼️ View Uploaded Photos</button>
+    <div class="photo-status" id="photoStatus">Photo upload ready</div>
+
     <button
         class="control-button reset-button"
         onclick="resetBuildingLocations()">
@@ -362,6 +383,11 @@ body {
 
 </div>
 
+
+<div id="photoFeed" class="photo-feed">
+  <div class="photo-feed-head"><h3>Uploaded Campus Photos</h3><button onclick="togglePhotoFeed(false)">Close ✕</button></div>
+  <div id="photoFeedContent">Loading photos...</div>
+</div>
 
 <script>
 
@@ -461,7 +487,6 @@ const satelliteLayer = L.tileLayer(
 
 
 satelliteLayer.addTo(map);
-
 
 /* ================================================= */
 /* GPS ICON */
@@ -1611,6 +1636,97 @@ setInterval(
 
 receiveAllObjects();
 
+
+</script>
+
+<script>
+/* ================= PHOTO UPLOAD AND SHARED FEED ================= */
+let lastKnownGPS = null;
+const originalShowGPSPosition = showGPSPosition;
+showGPSPosition = function(latitude, longitude, accuracy) {
+    lastKnownGPS = { latitude, longitude, accuracy };
+    originalShowGPSPosition(latitude, longitude, accuracy);
+};
+
+async function uploadPhoto(file) {
+    if (!file) return;
+    const status = document.getElementById('photoStatus');
+    if (!file.type || !file.type.startsWith('image/')) {
+        status.textContent = 'Please choose an image file.';
+        document.getElementById('photoInput').value = '';
+        return;
+    }
+    if (file.size > 12 * 1024 * 1024) {
+        status.textContent = 'Photo is too large. Choose an image under 12 MB.';
+        document.getElementById('photoInput').value = '';
+        return;
+    }
+    status.textContent = 'Getting GPS location...';
+    const sendUpload = async (coords) => {
+        status.textContent = 'Uploading photo to server...';
+        const form = new FormData();
+        form.append('photo', file);
+        form.append('object_id', objectId);
+        if (coords) {
+            form.append('latitude', coords.latitude);
+            form.append('longitude', coords.longitude);
+            form.append('accuracy', coords.accuracy ?? '');
+        }
+        try {
+            const response = await fetch('/upload-photo', { method: 'POST', body: form });
+            const raw = await response.text();
+            let result;
+            try { result = JSON.parse(raw); } catch { throw new Error(`Server returned HTTP ${response.status}, not JSON. Check that the updated app.py is running.`); }
+            if (!response.ok) throw new Error(result.error || `Upload failed (HTTP ${response.status})`);
+            status.textContent = '✅ Photo uploaded successfully!';
+            document.getElementById('photoInput').value = '';
+            await loadPhotoFeed();
+        } catch (error) {
+            status.textContent = '❌ Upload failed: ' + error.message;
+        }
+    };
+    if (!navigator.geolocation) {
+        await sendUpload(lastKnownGPS);
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        p => sendUpload({ latitude: p.coords.latitude, longitude: p.coords.longitude, accuracy: p.coords.accuracy }),
+        () => sendUpload(lastKnownGPS),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
+    );
+}
+
+function togglePhotoFeed(force) {
+    const panel = document.getElementById('photoFeed');
+    const open = typeof force === 'boolean' ? force : !panel.classList.contains('open');
+    panel.classList.toggle('open', open);
+    if (open) loadPhotoFeed();
+}
+
+async function loadPhotoFeed() {
+    const container = document.getElementById('photoFeedContent');
+    try {
+        const response = await fetch('/photos-feed?time=' + Date.now(), { cache: 'no-store' });
+        const raw = await response.text();
+        let photos;
+        try { photos = JSON.parse(raw); } catch { throw new Error(`Server returned HTTP ${response.status}, not JSON`); }
+        if (!response.ok) throw new Error(`Could not load photo feed (HTTP ${response.status})`);
+        if (!photos.length) {
+            container.innerHTML = '<p>No photos uploaded yet.</p>';
+            return;
+        }
+        container.innerHTML = photos.map(p => {
+            const coords = p.latitude != null && p.longitude != null
+                ? `${Number(p.latitude).toFixed(6)}, ${Number(p.longitude).toFixed(6)}`
+                : 'GPS location unavailable';
+            const date = p.uploaded_at ? new Date(p.uploaded_at).toLocaleString() : 'Time unavailable';
+            const title = `Object #${p.object_id || 'unknown'}`;
+            return `<div class="photo-card"><img src="${p.url}" alt="Uploaded campus photo" loading="lazy"><p><b>${title}</b></p><p>📍 ${coords}</p><p>🕒 ${date}</p></div>`;
+        }).join('');
+    } catch (error) {
+        container.textContent = 'Could not load photos: ' + error.message;
+    }
+}
 
 </script>
 
