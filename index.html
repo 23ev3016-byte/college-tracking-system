@@ -1767,7 +1767,7 @@ async function loadPhotoFeed() {
                 <p><b>${title}</b></p>
                 <p>📍 ${coords}</p>
                 <p>🕒 ${date}</p>
-                <div class="ai-result">${p.ai_result ? p.ai_result : '🤖 AI identification will appear here after identification is connected.'}</div>
+                <div class="ai-result">${p.ai_result ? p.ai_result.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '🤖 AI identification pending.'}</div>
             </div>
           </div>`;
 
