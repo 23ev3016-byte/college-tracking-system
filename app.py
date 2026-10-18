@@ -107,6 +107,37 @@ def location():
 def too_large(_error):
     return jsonify({"error": "Photo is too large. Maximum size is 12 MB."}), 413
 
+@app.route("/identify", methods=["POST"])
+def identify():
+    from google import genai
+    from PIL import Image
+    import io
+
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return jsonify({"error": "Gemini API key is not configured."}), 500
+
+    photo = request.files.get("photo")
+    if not photo:
+        return jsonify({"error": "Please upload a photo."}), 400
+
+    try:
+        image = Image.open(io.BytesIO(photo.read()))
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-3.0-flash",
+            contents=[
+                "Identify the objects in this image like Google Lens. "
+                "Give likely names and useful details. State uncertainty; don't guess.",
+                image
+            ]
+        )
+        return jsonify({"result": response.text})
+    except Exception as e:
+        app.logger.exception("Image identification failed")
+        return jsonify({"error": "Image identification failed. Check server logs."}), 500
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
