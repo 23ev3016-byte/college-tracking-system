@@ -132,7 +132,18 @@ def identify():
                 image
             ]
         )
-        return jsonify({"result": response.text})
+        result_text = response.text
+        photo_id = request.form.get("photo_id")
+
+        if photo_id:
+            items = load_photos()
+            for item in items:
+                if item.get("id") == photo_id:
+                    item["ai_result"] = result_text
+                    break
+            save_photos(items)
+
+        return jsonify({"result": result_text})
     except Exception as e:
         app.logger.exception("Image identification failed")
         return jsonify({"error": "Image identification failed. Check server logs."}), 500
