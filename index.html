@@ -1701,6 +1701,7 @@ async function uploadPhoto(file) {
             try {
                 const aiForm = new FormData();
                 aiForm.append('photo', file);
+                aiForm.append('photo_id', result.photo.id);
 
                 const aiResponse = await fetch('/identify', {
                      method: 'POST',
