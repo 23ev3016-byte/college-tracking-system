@@ -20,6 +20,8 @@ src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 
 
 
+
+
 <style>
 
 * {
@@ -273,6 +275,20 @@ body {
 .photo-card p { font-size: 12px; line-height: 1.5; margin: 6px 0 0; overflow-wrap: anywhere; }
 .photo-feed-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
 .photo-feed-head button { padding:7px 10px; border:0; border-radius:5px; cursor:pointer; }
+
+
+.ai-result {
+    margin-top: 10px;
+    padding: 10px;
+    background: #172554;
+    border: 1px solid #3b82f6;
+    border-radius: 8px;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 
 </style>
 
@@ -1721,7 +1737,15 @@ async function loadPhotoFeed() {
                 : 'GPS location unavailable';
             const date = p.uploaded_at ? new Date(p.uploaded_at).toLocaleString() : 'Time unavailable';
             const title = `Object #${p.object_id || 'unknown'}`;
-            return `<div class="photo-card"><img src="${p.url}" alt="Uploaded campus photo" loading="lazy"><p><b>${title}</b></p><p>📍 ${coords}</p><p>🕒 ${date}</p></div>`;
+            return `<div class="photo-card">
+                <img src="${p.url}" alt="Uploaded campus photo" loading="lazy">
+                <p><b>${title}</b></p>
+                <p>📍 ${coords}</p>
+                <p>🕒 ${date}</p>
+                <div class="ai-result">${p.ai_result ? p.ai_result : '🤖 AI identification will appear here after identification is connected.'}</div>
+            </div>
+          </div>`;
+
         }).join('');
     } catch (error) {
         container.textContent = 'Could not load photos: ' + error.message;
