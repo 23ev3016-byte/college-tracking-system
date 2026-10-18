@@ -125,7 +125,7 @@ def identify():
         image = Image.open(io.BytesIO(photo.read()))
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
-            model="gemini-3.0-flash",
+            model="gemini-3.8-flash",
             contents=[
                 "Identify the objects in this image like Google Lens. "
                 "Give likely names and useful details. State uncertainty; don't guess.",
