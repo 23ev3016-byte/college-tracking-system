@@ -1694,9 +1694,33 @@ async function uploadPhoto(file) {
             let result;
             try { result = JSON.parse(raw); } catch { throw new Error(`Server returned HTTP ${response.status}, not JSON. Check that the updated app.py is running.`); }
             if (!response.ok) throw new Error(result.error || `Upload failed (HTTP ${response.status})`);
-            status.textContent = '✅ Photo uploaded successfully!';
+            
+            status.textContent = '✅ Photo uploaded! Identifying with AI...';
             document.getElementById('photoInput').value = '';
+
+            try {
+                const aiForm = new FormData();
+                aiForm.append('photo', file);
+
+                const aiResponse = await fetch('/identify', {
+                     method: 'POST',
+                     body: aiForm
+                });
+
+                const aiData = await aiResponse.json();
+
+                if (!aiResponse.ok) {
+                     throw new Error(aiData.error || 'AI identification failed');
+                }
+
+                status.textContent = '✅ Photo uploaded and AI identification complete!';
+                console.log('Gemini result:', aiData.result);
+            } catch (aiError) {
+                status.textContent = '⚠️ Photo uploaded, but AI failed: ' + aiError.message;
+            }
+
             await loadPhotoFeed();
+
         } catch (error) {
             status.textContent = '❌ Upload failed: ' + error.message;
         }
