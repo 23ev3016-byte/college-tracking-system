@@ -1708,10 +1708,22 @@ async function uploadPhoto(file) {
                      body: aiForm
                 });
 
-                const aiData = await aiResponse.json();
+                const aiRaw = await aiResponse.text();
+                let aiData;
+                try {
+                    aiData = JSON.parse(aiRaw);
+                } catch {
+                    const preview = aiRaw.slice(0, 180).replace(/\s+/g, ' ');
+                    throw new Error(
+                        `AI server returned non-JSON response (HTTP ${aiResponse.status}). ${preview}`
+                    );
+                }
 
                 if (!aiResponse.ok) {
-                     throw new Error(aiData.error || 'AI identification failed');
+                    const details = Array.isArray(aiData.details)
+                        ? ' ' + aiData.details.join(' | ')
+                        : '';
+                    throw new Error((aiData.error || 'AI identification failed') + details);
                 }
 
                 status.textContent = '✅ Photo uploaded and AI identification complete!';
@@ -1762,14 +1774,16 @@ async function loadPhotoFeed() {
                 : 'GPS location unavailable';
             const date = p.uploaded_at ? new Date(p.uploaded_at).toLocaleString() : 'Time unavailable';
             const title = `Object #${p.object_id || 'unknown'}`;
+            const safeResult = p.ai_result
+                ? String(p.ai_result).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                : '🤖 AI identification pending.';
             return `<div class="photo-card">
                 <img src="${p.url}" alt="Uploaded campus photo" loading="lazy">
                 <p><b>${title}</b></p>
                 <p>📍 ${coords}</p>
                 <p>🕒 ${date}</p>
-                <div class="ai-result">${p.ai_result ? p.ai_result.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '🤖 AI identification pending.'}</div>
-            </div>
-          </div>`;
+                <div class="ai-result">${safeResult}</div>
+            </div>`;
 
         }).join('');
     } catch (error) {
